@@ -63,9 +63,17 @@ FailedPasswordAnswerAttemptWindowStart,FailedPasswordAnswerAttemptCount,FailedPa
 SELECT aspnet_Users.UserId,aspnet_Users.UserName,(aspnet_Membership.Password+'|'+CAST(aspnet_Membership.PasswordFormat as varchar)+'|'+aspnet_Membership.PasswordSalt),'User',NewID(),aspnet_Users.ApplicationId,aspnet_Users.LoweredUserName,
 aspnet_Users.MobileAlias,aspnet_Users.IsAnonymous,aspnet_Users.LastActivityDate,aspnet_Membership.Password,
 aspnet_Membership.MobilePIN,aspnet_Membership.Email,aspnet_Membership.LoweredEmail,aspnet_Membership.PasswordQuestion,aspnet_Membership.PasswordAnswer,
-aspnet_Membership.IsApproved,aspnet_Membership.IsLockedOut,aspnet_Membership.CreateDate,aspnet_Membership.LastLoginDate,aspnet_Membership.LastPasswordChangedDate,
-aspnet_Membership.LastLockoutDate,aspnet_Membership.FailedPasswordAttemptCount, aspnet_Membership.FailedPasswordAnswerAttemptWindowStart,
-aspnet_Membership.FailedPasswordAnswerAttemptCount,aspnet_Membership.FailedPasswordAttemptWindowStart,aspnet_Membership.Comment
+isnull(aspnet_Membership.IsApproved,1), 
+isnull(aspnet_Membership.IsLockedOut,0),
+isnull(aspnet_Membership.CreateDate, getdate()),
+isnull(aspnet_Membership.LastLoginDate, getdate()),
+isnull(aspnet_Membership.LastPasswordChangedDate, getdate()),
+isnull(aspnet_Membership.LastLockoutDate, getdate()),
+isnull(aspnet_Membership.FailedPasswordAttemptCount,0), 
+isnull(aspnet_Membership.FailedPasswordAnswerAttemptWindowStart,getdate()),
+isnull(aspnet_Membership.FailedPasswordAnswerAttemptCount,0),
+isnull(aspnet_Membership.FailedPasswordAttemptWindowStart,getdate())
+,aspnet_Membership.Comment
 FROM aspnet_Users
 LEFT OUTER JOIN aspnet_Membership ON aspnet_Membership.ApplicationId = aspnet_Users.ApplicationId 
 AND aspnet_Users.UserId = aspnet_Membership.UserId;
